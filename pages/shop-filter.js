@@ -10,6 +10,9 @@ import WishlistModal from "./../components/ecommerce/WishlistModal";
 import Layout from "./../components/layout/Layout";
 import { fetchProduct } from "./../redux/action/product";
 import ShopFilter from "././../components/ecommerce/Filter/Filter";
+import { server } from "../config/index";
+
+
 
 const ProductsFullWidth = ({ products, productFilters, fetchProduct }) => {
 
@@ -24,7 +27,7 @@ const ProductsFullWidth = ({ products, productFilters, fetchProduct }) => {
     let [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        fetchProduct(searchTerm, "https://whollykart.com/admin/api/index.php?action=product_list", productFilters);
+        fetchProduct(searchTerm, `${server}?action=product_list`, productFilters);
         cratePagination();
     }, [productFilters, limit, pages, products.items.length]);
 

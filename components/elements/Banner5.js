@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link"
-const Banner5 = () => {
+import { imagePath } from "../../config/index";
+
+const Banner5 = ({bannerData}) => {
     return (
         <>
             <div className="col-lg-4 col-md-6">
@@ -8,9 +10,11 @@ const Banner5 = () => {
                     className="banner-img wow animate__animated animate__fadeInUp"
                     data-wow-delay="0"
                 >
-                    <img src="/assets/imgs/banner/banner-1.png" alt="" />
+                    {Object.keys(bannerData).length > 0 && (
+                    <img src={`${imagePath}${bannerData.otherBanner.banner_middle_one}`} style={{width: '100%',height: '300px'}} alt="" />
+                    )}
                     <div className="banner-text">
-                        <h4>
+                        {/* <h4>
                             Everyday Fresh & <br />
                             Clean with Our
                             <br />
@@ -18,7 +22,7 @@ const Banner5 = () => {
                         </h4>
                         <Link href="/products"><a className="btn btn-xs">
                             Shop Now <i className="fi-rs-arrow-small-right"></i>
-                        </a></Link>
+                        </a></Link> */}
                     </div>
                 </div>
             </div>
@@ -27,8 +31,10 @@ const Banner5 = () => {
                     className="banner-img wow animate__animated animate__fadeInUp"
                     data-wow-delay=".2s"
                 >
-                    <img src="/assets/imgs/banner/banner-2.png" alt="" />
-                    <div className="banner-text">
+                    {Object.keys(bannerData).length > 0 && (
+                    <img src={`${imagePath}${bannerData.otherBanner.banner_middle_two}`} style={{width: '100%',height: '300px'}} alt="" />
+                    )}
+                    {/* <div className="banner-text">
                         <h4>
                             Make your Breakfast
                             <br />
@@ -37,7 +43,7 @@ const Banner5 = () => {
                         <Link href="/products"><a className="btn btn-xs">
                             Shop Now <i className="fi-rs-arrow-small-right"></i>
                         </a></Link>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="col-lg-4 d-md-none d-lg-flex">
@@ -45,8 +51,10 @@ const Banner5 = () => {
                     className="banner-img mb-sm-0 wow animate__animated animate__fadeInUp"
                     data-wow-delay=".4s"
                 >
-                    <img src="/assets/imgs/banner/banner-3.png" alt="" />
-                    <div className="banner-text">
+                    {Object.keys(bannerData).length > 0 && (
+                    <img src={`${imagePath}${bannerData.otherBanner.banner_middle_three}`} style={{width: '100%',height: '300px'}} alt="" />
+                    )}
+                    {/* <div className="banner-text">
                         <h4>
                             The best Organic <br />
                             Products Online
@@ -54,7 +62,7 @@ const Banner5 = () => {
                         <Link href="/products"><a className="btn btn-xs">
                             Shop Now <i className="fi-rs-arrow-small-right"></i>
                         </a></Link>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>

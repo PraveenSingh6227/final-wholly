@@ -13,6 +13,8 @@ import {
 import { useRouter } from 'next/router'
 import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
+import { server,imagePath } from "../config/index";
+
 
 const Cart = ({
   openCart,
@@ -27,7 +29,7 @@ const Cart = ({
     const router = useRouter()
   const price = () => {
     let price = 0;
-    cartItems.forEach((item) => (price += item.price * item.quantity));
+    cartItems.forEach((item) => (price += item.selectedVariant.variant_sale_price * item.quantity));
 
     return price;
   };
@@ -54,51 +56,60 @@ const Cart = ({
     //   body: JSON.stringify({ productId }),
     // }).then((t) => t.json());
     if(Object.keys(userDetails).length > 0){
-      const options = {
-        "key": "rzp_test_v6m14Nwj5tYXzF",
-        "amount": price()*100, // 2000 paise = INR 20, amount in paisa
-        "productInfo": JSON.stringify(cartItems),
-        "name": "Nest Mart And Grocery",
-        "description": "Purchase Description",
-        "image": "https://whollykart.com/admin/assets/imgs/theme/logo.jpeg",
-        "handler": function (response){
-          if(response.razorpay_payment_id){
-            let bodyFormData = new FormData();
-            if (
-                localStorage.getItem('userDetails') &&
-                localStorage.getItem('userDetails') !== undefined
-              ) {
-                const userDetails = JSON.parse(localStorage.getItem('userDetails'))
-                bodyFormData.append('user_id', userDetails.user_id);
-              }
-            bodyFormData.append('product_info', JSON.stringify(cartItems));
-            bodyFormData.append('total', price());
-            bodyFormData.append('action', 'order_insert');
-            bodyFormData.append('transaction_id', response.razorpay_payment_id);
-            fetch("https://whollykart.com/admin/api/index.php", {
-              method: "POST",
-              body: bodyFormData,
-            }).then((t) => clearCart()).then(()=> router.push('/'));
-          }   
-
-        },
-        "prefill": {
-          "name": "Harshil Mathur",
-          "email": "harshil@razorpay.com"
-        },
-        "notes": {
-          "address": "Hello World"
-        },
-        "theme": {
-          "color": "#F37254"
-        }
-      };
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
+      const userDetails = JSON.parse(localStorage.getItem('userDetails'))
+      if(userDetails==null){
+        toast("Please login in order to checkout.");
+        return;
+      }
+      if(userDetails.flatNo==undefined ||userDetails.flatNo==null || userDetails.flatNo==""){
+        toast("Please go to your account and update your shipping address");
+      }else{
+        const options = {
+          "key": "rzp_test_v6m14Nwj5tYXzF",
+          "amount": price()*100, // 2000 paise = INR 20, amount in paisa
+          "productInfo": JSON.stringify(cartItems),
+          "name": "Nest Mart And Grocery",
+          "description": "Purchase Description",
+          "image": "https://vrcwebsolutions.com/ecom-admin/admin/assets/imgs/theme/logo.jpeg",
+          "handler": function (response){
+            if(response.razorpay_payment_id){
+              let bodyFormData = new FormData();
+              if (
+                  localStorage.getItem('userDetails') &&
+                  localStorage.getItem('userDetails') !== undefined
+                ) {
+                  bodyFormData.append('user_id', userDetails.user_id);
+                }
+              bodyFormData.append('product_info', JSON.stringify(cartItems));
+              bodyFormData.append('shipping_info', JSON.stringify(userDetails));
+              bodyFormData.append('total', price());
+              bodyFormData.append('action', 'order_insert');
+              bodyFormData.append('transaction_id', response.razorpay_payment_id);
+              fetch(`${server}`, {
+                method: "POST",
+                body: bodyFormData,
+              }).then((t) => clearCart()).then(()=> router.push('/'));
+            }   
   
-      paymentObject.on("payment.failed", function (response) {
-        alert("Payment failed. Please try again. Contact support for help");
-      });
+          },
+          "prefill": {
+            "name": "Harshil Mathur",
+            "email": "harshil@razorpay.com"
+          },
+          "notes": {
+            "address": "Hello World"
+          },
+          "theme": {
+            "color": "#F37254"
+          }
+        };
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+    
+        paymentObject.on("payment.failed", function (response) {
+          alert("Payment failed. Please try again. Contact support for help");
+        });
+      }
     }else{
       toast("Please login in order to checkout.");
     }
@@ -118,7 +129,7 @@ const Cart = ({
                 <h1 className="heading-2 mb-10">Your Cart</h1>
                 <div className="d-flex justify-content-between">
                   <h6 className="text-body">
-                    There are <span className="text-brand">3</span> products in
+                    There are <span className="text-brand">{cartItems.length}</span> products in
                     your cart
                   </h6>
                   <h6 className="text-body">
@@ -159,7 +170,8 @@ const Cart = ({
                       {cartItems.map((item, i) => (
                         <tr key={i}>
                           <td className="image product-thumbnail">
-                            <img src={item.images[0].img} />
+                            {console.log('cartItems-->',cartItems)}
+                            <img src={imagePath+item.img[0].path} />
                           </td>
 
                           <td className="product-des product-name">
@@ -184,7 +196,7 @@ const Cart = ({
                             </div>
                           </td>
                           <td className="price" data-title="Price">
-                            <h4 className="text-brand">Rs. {item.price}</h4>
+                            <h4 className="text-brand">Rs. {item.selectedVariant.variant_sale_price}</h4>
                           </td>
                           <td
                             className="text-center detail-info"
@@ -193,14 +205,14 @@ const Cart = ({
                             <div className="detail-extralink mr-15">
                               <div className="detail-qty border radius ">
                                 <a
-                                  onClick={(e) => decreaseQuantity(item.id)}
+                                  onClick={(e) => decreaseQuantity(item.pr_id)}
                                   className="qty-down"
                                 >
                                   <i className="fi-rs-angle-small-down"></i>
                                 </a>
                                 <span className="qty-val">{item.quantity}</span>
                                 <a
-                                  onClick={(e) => increaseQuantity(item.id)}
+                                  onClick={(e) => increaseQuantity(item.pr_id)}
                                   className="qty-up"
                                 >
                                   <i className="fi-rs-angle-small-up"></i>
@@ -210,12 +222,12 @@ const Cart = ({
                           </td>
                           <td className="text-right" data-title="Cart">
                             <h4 className="text-body">
-                              Rs. {item.quantity * item.price}
+                              Rs. {item.quantity * item.selectedVariant.variant_sale_price}
                             </h4>
                           </td>
                           <td className="action" data-title="Remove">
                             <a
-                              onClick={(e) => deleteFromCart(item.id)}
+                              onClick={(e) => deleteFromCart(item.pr_id)}
                               className="text-muted"
                             >
                               <i className="fi-rs-trash"></i>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import SwiperCore, { Navigation } from "swiper";
-import { server } from "../../config/index";
+import { server,handleFilterImage } from "../../config/index";
 
 SwiperCore.use([Navigation]);
 
@@ -31,7 +31,10 @@ const NewArrival2 = () => {
                     <figure className="col-md-4 mb-0">
                         <Link href="/products/[slug]" as={`/products/${product.slug}`}>
                             <a>
-                                <img src={product.images[0].img} alt="" />
+                                <img 
+                                src={handleFilterImage(product)}
+                                style={{width: '100%',height: '100px'}}
+                                alt="" />
                             </a>
                         </Link>
                     </figure>
@@ -43,13 +46,13 @@ const NewArrival2 = () => {
                         </h6>
                         <div className="product-rate-cover">
                             <div className="product-rate d-inline-block">
-                                <div className="product-rating" style={{ width: "90%" }}></div>
+                                <div className="product-rating" style={{ width: `${product.review.aggregateReview.rating_percent}%` }}></div>
                             </div>
-                            <span className="font-small ml-5 text-muted"> (4.0)</span>
+                            <span className="font-small ml-5 text-muted"> ({product.review.aggregateReview.total_review})</span>
                         </div>
                         <div className="product-price">
-                            <span>${product.price} </span>
-                            <span className="old-price">{product.oldPrice && `$ ${product.oldPrice}`}</span>
+                            <span>Rs. {(product.variants.length > 0) ? product.variants[0].variant_sale_price : "" } </span>
+                            <span className="old-price">{product.oldPrice && `Rs. ${product.oldPrice}`}</span>
                         </div>
                     </div>
                 </article>

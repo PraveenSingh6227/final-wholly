@@ -6,6 +6,8 @@ import { addToCart } from "../../redux/action/cart";
 import { addToCompare } from "../../redux/action/compareAction";
 import { openQuickView } from "../../redux/action/quickViewAction";
 import { addToWishlist } from "../../redux/action/wishlistAction";
+import { handleFilterImage } from "../../config/index";
+
 
 const SingleProductList = ({
     product,
@@ -15,6 +17,7 @@ const SingleProductList = ({
     openQuickView,
 }) => {
     const handleCart = (product) => {
+        product.selectedVariant = product.variants[0]
         addToCart(product);
         toast("Product added to Cart !");
     };
@@ -43,12 +46,13 @@ const SingleProductList = ({
                                     <a>
                                         <img
                                             className="default-img"
-                                            src={product.images[0].img}
+                                            src={handleFilterImage(product)}
+                                            style={{width:'100%',height:'170px'}}
                                             alt=""
                                         />
                                         <img
                                             className="hover-img"
-                                            src={product.gallery[0].img}
+                                            src={(product.img.length > 1) ? imagePath+product.img[1].path : ""}
                                             alt=""
                                         />
                                     </a>
@@ -94,9 +98,9 @@ const SingleProductList = ({
                             {product.discount.isActive && (
                                 <span className="sale">Sale</span>
                             )}
-                            {product.discount.percentage >= 5 && (
+                            {(product.variants.length > 0) ? product.variants[0].discount : ""  >= 5 && (
                                 <span className="hot">
-                                    {product.discount.percentage}%
+                                    {(product.variants.length > 0) ? product.variants[0].discount : "" }%
                                 </span>
                             )}
                         </div>
@@ -136,7 +140,7 @@ const SingleProductList = ({
                         </p>
 
                         <div className="product-price">
-                            <span>Rs. {product.price} </span>
+                            <span>Rs. {(product.variants.length > 0) ? product.variants[0].variant_sale_price : "" } </span>
                             <span className="old-price">{product.oldPrice && `Rs. ${product.oldPrice}`}</span>
                         </div>
 

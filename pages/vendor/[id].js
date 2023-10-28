@@ -14,6 +14,8 @@ import SingleProduct from "../../components/ecommerce/SingleProduct";
 import Layout from "../../components/layout/Layout";
 import { fetchProduct } from "../../redux/action/product";
 import data from "../../util/storeData";
+import { server } from "../../config/index";
+
 
 const Products = ({ products, productFilters, fetchProduct }) => {
     console.log(products);
@@ -34,7 +36,7 @@ const Products = ({ products, productFilters, fetchProduct }) => {
     const { id } = Router.query;
 
     useEffect(() => {
-        fetchProduct(searchTerm, "https://vrcwebsolutions.com/ecom-admin/admin/api/index.php?action=product_list", productFilters);
+        fetchProduct(searchTerm, `${server}?action=product_list`, productFilters);
         setSingleStore(data.find((data) => data.id == id));
         cratePagination();
     }, [productFilters, limit, pages, products.items.length, id]);

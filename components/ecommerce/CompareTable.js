@@ -2,11 +2,14 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import { addToCart } from "../../redux/action/cart";
+import { handleFilterImage } from "../../config/index";
+
 const CompareTable = ({ data, features, deleteFromCompare, addToCart }) => {
  
     
 
     const handleCart = (product) => {
+        product.selectedVariant = product.variants[0]
         addToCart(product);
         toast("Product added to Cart !");
     };
@@ -24,7 +27,7 @@ const CompareTable = ({ data, features, deleteFromCompare, addToCart }) => {
                         {data.map((product) =>
                             feature == "preview" ? (
                                 <td className="row_img">
-                                    <img src={product.images[0].img} />
+                                    <img src={handleFilterImage(product)} />
                                 </td>
                             ) : feature == "name" ? (
                                 <td className="product_name">
@@ -34,7 +37,7 @@ const CompareTable = ({ data, features, deleteFromCompare, addToCart }) => {
                                 </td>
                             ) : feature == "price" ? (
                                 <td className="product_price">
-                                    <span className="price">${product.price}</span>
+                                    <span className="price">Rs. {(product.variants.length > 0) ? product.variants[0].variant_sale_price : "" }</span>
                                 </td>
                             ) : feature == "rating" ? (
                                 <td>
@@ -59,27 +62,49 @@ const CompareTable = ({ data, features, deleteFromCompare, addToCart }) => {
                                 </td>
                             ) : feature == "description" ? (
                                 <td className="row_text font-xs">
-                                    <p>{product.desc}</p>
+                                    <p>{product.description}</p>
+                                </td>                
+                            ) : feature == "description" ? (
+                                <td className="row_text font-xs">
+                                    <p>{product.description}</p>
+                                </td>                
+                            ) : feature == "color" ? (
+                                <td className="row_text font-xs">
+                                    <p>{product.description}</p>
                                 </td>                
                             ) : feature == "stock" ? (
                                 <td className="row_stock">
-                                    {product.stock >= 0 ? (
-                                        <span>In Stock</span>
-                                    ) : (
-                                        <span className="text-danger font-weight-bold">
-                                            Out of stock
-                                        </span>
-                                    )}
+                                  <ul className="list-filter color-filter">
+                                        {Object.keys(product).length > 0 && product.variants.map((clr, i) => (
+                                            <li key={i}>
+                                                <a href="javascript:void(0)">
+                                                    <span style={{ background: clr.variant_color }}></span>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </td>
                             ) : feature == "weight" ? (
                                 <td className="row_weight">
-                                    {product.weight} gram
+                                    {product.variants[0].variant_weight} gram
                                 </td>
                             ) : feature == "dimensions" ? (
-                                <td className="row_dimensions">N/A</td>
+                                <td className="row_dimensions">
+                                    <ul>
+                                        <li>
+                                            <p>Length : {product.variants[0].variant_length}mm</p>
+                                        </li>
+                                        <li>
+                                            <p>Width : {product.variants[0].variant_width}mm</p>
+                                        </li>
+                                        <li>
+                                            <p>Height : {product.variants[0].variant_height}mm</p>
+                                        </li>
+                                    </ul>
+                                </td>
                             ) : feature == "buy" ? (
                                 <td className="row_btn">
-                                    {product.stock >= 0 ? (
+                                    {product.variants[0].variant_total_stock >= 0 ? (
                                         <button
                                             className="btn  btn-sm"
                                             onClick={(e) => handleCart(product)}

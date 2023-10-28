@@ -3,6 +3,9 @@ import SwiperCore, { Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { fetchByCatagory } from "../../redux/action/product";
 import SingleProduct from "./../ecommerce/SingleProduct";
+import { server } from "../../config/index";
+
+
 
 SwiperCore.use([Navigation]);
 
@@ -17,7 +20,7 @@ const DiscountSlider = () => {
 
     const fetchProducts = async () => {
         // With Category
-        const allProducts = await fetchByCatagory("https://whollykart.com/ecom-admin/admin/api/index.php?action=product_list");
+        const allProducts = await fetchByCatagory(`${server}?action=product_list`);
 
         // Discount
         const discountProduct = allProducts.filter(

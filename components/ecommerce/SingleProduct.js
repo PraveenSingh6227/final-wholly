@@ -6,6 +6,7 @@ import { addToCart } from "../../redux/action/cart";
 import { addToCompare } from "../../redux/action/compareAction";
 import { openQuickView } from "../../redux/action/quickViewAction";
 import { addToWishlist } from "../../redux/action/wishlistAction";
+import { handleFilterImage,imagePath, sort_by } from "../../config/index";
 
 const SingleProduct = ({
     product,
@@ -15,6 +16,7 @@ const SingleProduct = ({
     openQuickView,
 }) => {
     const handleCart = (product) => {
+        product.selectedVariant = product.variants[0]
         addToCart(product);
         toast("Product added to Cart !");
     };
@@ -40,12 +42,13 @@ const SingleProduct = ({
                             <a>
                                 <img
                                     className="default-img"
-                                    src={product.images[0].img}
+                                    src={handleFilterImage(product)}
                                     alt=""
+                                    style={{width:'100%',height:'170px'}}
                                 />
                                 <img
                                     className="hover-img"
-                                    src={product.gallery[0].img}
+                                    src={(product.img.length > 1) ? imagePath+product.img[1].path : ""}
                                     alt=""
                                 />
                             </a>
@@ -77,19 +80,19 @@ const SingleProduct = ({
                     </div>
 
                     <div className="product-badges product-badges-position product-badges-mrg">
-                        {product.trending && <span className="hot">Hot</span>}
-                        {product.created && <span className="new">New</span>}
-                        {product.totalSell > 100 && (
+                        {product.is_trending_products && <span className="hot">Hot</span>}
+                        {/* {product.created && <span className="new">New</span>} */}
+                        {/* {product.totalSell > 100 && (
                             <span className="best">Best Sell</span>
-                        )}
-                        {product.discount.isActive && (
+                        )} */}
+                        {/* {product.discount.isActive && (
                             <span className="sale">Sale</span>
                         )}
-                        {product.discount.percentage >= 5 && (
+                        {(product.variants.length > 0) ? product.variants[0].discount : ""  >= 5 && (
                             <span className="hot">
-                                {product.discount.percentage}%
+                                {(product.variants.length > 0) ? product.variants[0].discount : "" }%
                             </span>
-                        )}
+                        )} */}
                     </div>
                 </div>
                 <div className="product-content-wrap">
@@ -111,24 +114,24 @@ const SingleProduct = ({
                         <div className="product-rate d-inline-block">
                             <div
                                 className="product-rating"
-                                style={{ width: "90%" }}
+                                style={{ width: `${product.review.aggregateReview.rating_percent}%` }}
                             ></div>
                         </div>
                         <span className="font-small ml-5 text-muted">
                             {" "}
-                            ({product.ratingScore})
+                            ({product.review.aggregateReview.total_review})
                         </span>
                     </div>
 
                     <div>
                         <span className="font-small text-muted">
-                            By <Link href="/vendor/1"><a>NestFood</a></Link>
+                            By <Link href="#"><a>{product.vendor.name}</a></Link>
                         </span>
                     </div>
 
                     <div className="product-card-bottom">
                         <div className="product-price">
-                            <span>Rs. {product.price} </span>
+                            <span>Rs. {(product.variants.length > 0) ? product.variants[0].variant_sale_price : "" } </span>
                             <span className="old-price">{product.oldPrice && `Rs. ${product.oldPrice}`}</span>
                         </div>
                         <div className="add-cart">

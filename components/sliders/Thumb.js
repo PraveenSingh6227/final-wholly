@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SwiperCore, { Navigation, Thumbs } from "swiper";
 import "swiper/css/thumbs";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { imagePath, sort_by } from "../../config/index";
 
 SwiperCore.use([Navigation, Thumbs]);
 
 const ThumbSlider = ({ product }) => {
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
+    const [produtImage, setProductImage] = useState([])
+    useEffect(()=>{
+        setProductImage(product.img.sort(sort_by('image_type', false, parseInt)))
+    })
     return (
         <div>
             <Swiper
@@ -21,9 +25,9 @@ const ThumbSlider = ({ product }) => {
                 thumbs={{ swiper: thumbsSwiper }}
                 className="mySwiper2"
             >
-                {product.gallery.map((item) => (
+                {produtImage.map((item) => (
                     <SwiperSlide>
-                        <img className="pdImage" src={item.img} />
+                        <img className="pdImage" src={imagePath+item.path} />
                         {/* <Zoom
                             img={item.thumb}
                             zoomScale={5}
@@ -43,9 +47,9 @@ const ThumbSlider = ({ product }) => {
                 watchSlidesProgress={true}
                 className="mySwiper"
             >
-                {product.gallery.map((item) => (
+                {produtImage.map((item) => (
                     <SwiperSlide>
-                        <img className="pdImageThumb" src={item.img} />
+                        <img className="pdImageThumb" src={imagePath+item.path} />
                     </SwiperSlide>
                 ))}
             </Swiper>

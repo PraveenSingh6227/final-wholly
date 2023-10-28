@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { server } from "../../config/index";
 import SingleProduct from "./../ecommerce/SingleProduct";
 
+
 SwiperCore.use([Navigation]);
 
 const NewArrival = () => {
@@ -15,7 +16,7 @@ const NewArrival = () => {
 
     const fetchProducts = async () => {
         // With Category
-        const request = await fetch("https://whollykart.com/admin/api/index.php?action=product_list");
+        const request = await fetch(`${server}?action=product_list`);
         const allProducts = await request.json();
 
         const newArrivalProducts = allProducts.sort(function (a, b) {

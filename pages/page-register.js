@@ -4,6 +4,8 @@ import Layout from "../components/layout/Layout";
 import { toast } from "react-toastify";
 import Preloader from "./../components/elements/Preloader";
 import { useRouter } from 'next/router'
+import { server } from "../config/index";
+
 
 function Login() {
   const [name, setName] = useState("");
@@ -42,7 +44,7 @@ function Login() {
     bodyFormData.append("password", password);
     bodyFormData.append("action", "user_register");
     const response = await fetch(
-      "https://whollykart.com/admin/api/index.php",
+      server,
       {
         method: "POST",
         body: bodyFormData,

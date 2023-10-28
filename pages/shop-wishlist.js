@@ -18,6 +18,7 @@ const Wishlist = ({
     
 
     const handleCart = (product) => {
+        product.selectedVariant = product.variants[0]
         addToCart(product);
         toast("Product added to Cart !");
     };
@@ -54,8 +55,8 @@ const Wishlist = ({
                                                                 <img
                                                                     src={
                                                                         product
-                                                                            .images[0]
-                                                                            .img
+                                                                            .img[0]
+                                                                            .image_type
                                                                     }
                                                                     alt=""
                                                                     className="img-fluid"
@@ -92,7 +93,7 @@ const Wishlist = ({
                                                                 <h3 className="text-brand">
                                                                     $
                                                                     {
-                                                                        product.price
+                                                                        (product.variants.length > 0) ? product.variants[0].variant_sale_price : "" 
                                                                     }
                                                                 </h3>
                                                             </td>
@@ -100,15 +101,16 @@ const Wishlist = ({
                                                                 className="text-center detail-info"
                                                                 data-title="Stock"
                                                             >
-                                                                {product.stock ===
-                                                                0 ? (
+                                                                {product.variants[0].stock_status ===
+                                                                'in_stock' ? (
+                                                                   
+                                                                    <span className="stock-status in-stock mb-0">
+                                                                        In Stock
+                                                                    </span>
+                                                                ) : (
                                                                     <span className="stock-status out-stock mb-0">
                                                                         Out of
                                                                         stock
-                                                                    </span>
-                                                                ) : (
-                                                                    <span className="stock-status in-stock mb-0">
-                                                                        In Stock
                                                                     </span>
                                                                 )}
                                                             </td>
@@ -116,7 +118,7 @@ const Wishlist = ({
                                                                 className="text-right"
                                                                 data-title="Cart"
                                                             >
-                                                                {product.stock ===
+                                                                {product.variants[0].variant_total_stock ===
                                                                 0 ? (
                                                                     <button className="btn btn-sm btn-secondary">
                                                                         Contact
@@ -147,7 +149,7 @@ const Wishlist = ({
                                                                         e
                                                                     ) =>
                                                                         deleteFromWishlist(
-                                                                            product.id
+                                                                            product.pr_id
                                                                         )
                                                                     }
                                                                 >

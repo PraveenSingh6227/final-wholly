@@ -13,24 +13,26 @@ import QuickView from "./../components/ecommerce/QuickView";
 import SingleProduct from "./../components/ecommerce/SingleProduct";
 import Layout from "./../components/layout/Layout";
 import { fetchProduct } from "./../redux/action/product";
+import { server } from "../config";
 
 const Products = ({ products, productFilters, fetchProduct }) => {
-    // console.log(products);
-
     let Router = useRouter(),
         searchTerm = Router.query.search,
         showLimit = 12,
         showPagination = 4;
+        productFilters.cat_slug = Router.query.cat
 
     let [pagination, setPagination] = useState([]);
+    let [totalProducts, setTotalProducts] = useState([]);
     let [limit, setLimit] = useState(showLimit);
     let [pages, setPages] = useState(Math.ceil(products.items.length / limit));
     let [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        fetchProduct(searchTerm, "https://whollykart.com/admin/api/index.php?action=product_list", productFilters);
+        fetchProduct(searchTerm, `${server}?action=product_list`, productFilters);
+        fetchTotalProduct()
         cratePagination();
-    }, [productFilters, limit, pages, products.items.length]);
+    }, [productFilters, limit, pages, products.items.length, Router]);
 
     const cratePagination = () => {
         // set pagination
@@ -40,6 +42,13 @@ const Products = ({ products, productFilters, fetchProduct }) => {
 
         setPagination(arr);
         setPages(Math.ceil(products.items.length / limit));
+    };
+
+    const fetchTotalProduct = async () => {
+        // With Category
+        const request = await fetch(`${server}?action=product_by_cat&cat_slug=${Router.query.cat}`);
+        const allProducts = await request.json();
+        setTotalProducts(allProducts);
     };
 
     const startIndex = currentPage * limit - limit;
@@ -153,11 +162,11 @@ const Products = ({ products, productFilters, fetchProduct }) => {
                                             <label className="fw-900">
                                                 Color
                                             </label>
-                                            <VendorFilter />
-                                            <label className="fw-900 mt-15">
+                                            <VendorFilter productData={products} totalProducts={totalProducts} />
+                                            {/* <label className="fw-900 mt-15">
                                                 Item Condition
                                             </label>
-                                            <SizeFilter />
+                                            <SizeFilter /> */}
                                         </div>
                                     </div>
                                     <br />

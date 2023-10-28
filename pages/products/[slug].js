@@ -1,8 +1,9 @@
 import React from "react";
 import ProductDetails from "../../components/ecommerce/ProductDetails";
 import Layout from '../../components/layout/Layout';
-import { server } from "../../config/index";
 import { findProductIndex } from "../../util/util";
+import { server } from "../../config/index";
+
 
 const ProductId = ({ product }) => {
     return (
@@ -20,7 +21,7 @@ const ProductId = ({ product }) => {
 
 ProductId.getInitialProps = async (params) => {
     
-    const request = await fetch("https://whollykart.com/admin/api/index.php?action=product_list");
+    const request = await fetch(`${server}?action=product_list`);
     const data = await request.json();
 
     const index = findProductIndex(data, params.query.slug);

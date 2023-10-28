@@ -1,12 +1,12 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 // import { fetchByCatagory } from "../../redux/action/product";
-import { server } from "../../config/index";
+import { server, imagePath } from "../../config/index";
 import FeaturedSlider from "../sliders/Featured";
 import NewArrivalTabSlider from "../sliders/NewArrivalTab";
 import TrendingSlider from "../sliders/Trending";
 
-function FeatchTabSlider() {
+function FeatchTabSlider({bannerData}) {
     const [active, setActive] = useState("1");
     const [featured, setFeatured] = useState([]);
     const [trending, setTrending] = useState([]);
@@ -15,7 +15,7 @@ function FeatchTabSlider() {
     const featuredProduct = async () => {
         const request = await fetch(`${server}/api/index.php?action=product_list`);
         const allProducts = await request.json();
-        const featuedItem = allProducts.filter((item) => item.featured);
+        const featuedItem = allProducts.filter((item) => item.daily_featured == 1);
         setFeatured(featuedItem);
         setActive("1");
     };
@@ -23,16 +23,14 @@ function FeatchTabSlider() {
     const trendingProduct = async () => {
         const request = await fetch(`${server}/api/index.php?action=product_list`);
         const allProducts = await request.json();
-        const trendingItem = allProducts.filter((item) => item.trending);
+        const trendingItem = allProducts.filter((item) => item.daily_popular == 1);
         setTrending(trendingItem);
         setActive("2");
     };
     const newArrivalProduct = async () => {
         const request = await fetch(`${server}/api/index.php?action=product_list`);
         const allProducts = await request.json();
-        const newArrivalItem = allProducts.sort(function (a, b) {
-            return a.created > b.created ? -1 : 1;
-        });
+        const newArrivalItem = allProducts.filter((item) => item.daily_newly_added == 1);
         setNewArrival(newArrivalItem);
         setActive("3");
     };
@@ -67,8 +65,16 @@ function FeatchTabSlider() {
 
             <div className="row">
                 <div className="col-lg-3 d-none d-lg-flex wow animate__animated animate__fadeIn">
-                    <div className="banner-img style-2">
-                        <div className="banner-text">
+                {Object.keys(bannerData).length > 0 && (
+                    <div className="banner-img" style={{    
+                        borderRadius: '15px',
+                        overflow: 'hidden',
+                        height: '520px',
+                        background: `url(${imagePath}${bannerData.otherBanner.banner_bottom_left}) no-repeat center bottom`,
+                        backgroundSize: 'cover',
+                        width: '100%'
+                        }}>
+                        {/* <div className="banner-text">
                             <h2 className="mb-100">Bring nature into your home</h2>
 
                             <Link href="/products">
@@ -76,8 +82,9 @@ function FeatchTabSlider() {
                                     Shop Now <i className="fi-rs-arrow-small-right"></i>
                                 </a>
                             </Link>
-                        </div>
+                        </div> */}
                     </div>
+                )}    
                 </div>
                 <div className="col-lg-9 col-md-12">
                     <div className="tab-content wow fadeIn animated" id="myTabContent">

@@ -13,8 +13,9 @@ export const fetchProduct = (searchTerm, url, filters) => async dispatch => {
         window.products = data
 
         const searchedItems = searchItemsByText(searchTerm, data)
+        filters .category="";
+        console.log('filters--->',filters)
         const filteredList = filterProductList(searchedItems, filters)
-
         dispatch({
             type: Types.FETCHED_PRODUCT,
             payload: { products: filteredList }

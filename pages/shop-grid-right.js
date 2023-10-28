@@ -14,6 +14,8 @@ import SingleProduct from "../components/ecommerce/SingleProduct";
 import Breadcrumb2 from "../components/layout/Breadcrumb2";
 import Layout from "../components/layout/Layout";
 import { fetchProduct } from "../redux/action/product";
+import { server } from "../config/index";
+
 
 const Products = ({ products, productFilters, fetchProduct }) => {
     // console.log(products);
@@ -29,7 +31,7 @@ const Products = ({ products, productFilters, fetchProduct }) => {
     let [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        fetchProduct(searchTerm, "https://whollykart.com/admin/api/index.php?action=product_list", productFilters);
+        fetchProduct(searchTerm, `${server}?action=product_list`, productFilters);
         cratePagination();
     }, [productFilters, limit, pages, products.items.length]);
 

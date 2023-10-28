@@ -1,7 +1,21 @@
 import React from "react";
 import Link from "next/link"
+import { useEffect, useState } from "react";
+import { server,imagePath } from "../../config/index";
 
 const Footer = () => {
+    const [banner, setBanner] = useState({});
+
+    useEffect(() => {
+        fetchBanner();
+    }, []);
+
+    const fetchBanner = async () => {
+        const request = await fetch(`${server}?action=banner_list`);
+        const getBanner = await request.json();
+        setBanner(getBanner);
+    };
+
     return (
         <>
             <footer className="main">
@@ -9,8 +23,19 @@ const Footer = () => {
                     <div className="container">
                         <div className="row">
                             <div className="col-lg-12">
-                                <div className="position-relative newsletter-inner">
-                                    <div className="newsletter-content">
+                            {Object.keys(banner).length > 0 && (
+                                <div style={{
+                                    background: `url(${imagePath}${banner.otherBanner.banner_bottom}) no-repeat center bottom`,
+                                    backgroundSize: 'cover',
+                                    padding: '84px 78px',
+                                    clear: 'both',
+                                    display: 'table',
+                                    width: '100%',
+                                    borderRadius: '20px',
+                                    overflow: 'hidden',
+                                    minHeight: '400px'
+                                }}>
+                                    {/* <div className="newsletter-content">
                                         <h2 className="mb-20">
                                             Stay home & get your daily <br />
                                             needs from our shop
@@ -34,8 +59,9 @@ const Footer = () => {
                                     <img
                                         src="/assets/imgs/banner/banner-9.png"
                                         alt="newsletter"
-                                    />
+                                    /> */}
                                 </div>
+                            )}    
                             </div>
                         </div>
                     </div>

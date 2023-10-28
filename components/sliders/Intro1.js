@@ -1,10 +1,11 @@
 import SwiperCore, { Navigation, Pagination } from "swiper";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { imagePath } from "../../config/index";
 
 SwiperCore.use([Navigation, Pagination]);
 
-const Intro1 = () => {
+const Intro1 = ({bannerData}) => {
     return (
         <>
             <Swiper
@@ -18,36 +19,38 @@ const Intro1 = () => {
                 }}
                 className="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1"
             >
-                <SwiperSlide>
-                    <div
-                        className="single-hero-slider single-animation-wrap"
-                        style={{
-                            backgroundImage:
-                                "url(assets/imgs/slider/slider-1.png)",
-                        }}
-                    >
-                        <div className="slider-content">
-                            <h1 className="display-2 mb-40">
-                                Don’t miss amazing
-                                <br />
-                                grocery deals
-                            </h1>
-                            <p className="mb-65">
-                                Sign up for the daily newsletter
-                            </p>
-                            <form className="form-subcriber d-flex">
-                                <input
-                                    type="email"
-                                    placeholder="Your emaill address"
-                                />
-                                <button className="btn" type="submit">
-                                    Subscribe
-                                </button>
-                            </form>
+                {Object.keys(bannerData).length > 0 && bannerData.topBanner.map((banner, i) => (
+                    <SwiperSlide>
+                        <div
+                            className="single-hero-slider single-animation-wrap"
+                            style={{
+                                backgroundImage:
+                                    "url("+imagePath+"/"+banner.banner_url+")",
+                            }}
+                        >
+                            {/* <div className="slider-content">
+                                <h1 className="display-2 mb-40">
+                                    Don’t miss amazing
+                                    <br />
+                                    grocery deals
+                                </h1>
+                                <p className="mb-65">
+                                    Sign up for the daily newsletter
+                                </p>
+                                <form className="form-subcriber d-flex">
+                                    <input
+                                        type="email"
+                                        placeholder="Your emaill address"
+                                    />
+                                    <button className="btn" type="submit">
+                                        Subscribe
+                                    </button>
+                                </form>
+                            </div> */}
                         </div>
-                    </div>
-                </SwiperSlide>
-                <SwiperSlide>
+                    </SwiperSlide>
+                ))}
+                {/* <SwiperSlide>
                     <div
                         className="single-hero-slider single-animation-wrap"
                         style={{
@@ -75,7 +78,7 @@ const Intro1 = () => {
                             </form>
                         </div>
                     </div>
-                </SwiperSlide>
+                </SwiperSlide> */}
             </Swiper>
 
             <div className="slider-arrow hero-slider-1-arrow">

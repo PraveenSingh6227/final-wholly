@@ -1,9 +1,25 @@
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { updateProductCategory } from "../../../redux/action/productFiltersAction";
+import { useEffect, useState } from "react";
+import { server,imagePath } from "../../../config/index";
+
 
 const CategoryProduct = ({ updateProductCategory }) => {
     const router = useRouter();
+
+    const [category, setCategory] = useState([]);
+
+    useEffect(() => {
+        fetchAllCategory();
+    }, []);
+
+    const fetchAllCategory = async () => {
+        // With Category
+        const request = await fetch(`${server}?action=category_list`);
+        const allCategory = await request.json();
+        setCategory(allCategory);
+    };
 
     const selectCategory = (e, category) => {
         e.preventDefault();
@@ -22,36 +38,18 @@ const CategoryProduct = ({ updateProductCategory }) => {
                 <li onClick={(e) => selectCategory(e, "")}>
                     <a>All</a>
                 </li>
-                <li onClick={(e) => selectCategory(e, "jeans")}>
-                    <a>
-                        <img
-                            src="/assets/imgs/theme/icons/category-1.svg"
-                            alt=""
-                        />
-                        Milks & Dairies
-                    </a>
-                    <span className="count">30</span>
-                </li>
-                <li onClick={(e) => selectCategory(e, "shoe")}>
-                    <a>
-                        <img
-                            src="/assets/imgs/theme/icons/category-2.svg"
-                            alt=""
-                        />
-                        Clothing
-                    </a>
-                    <span className="count">35</span>
-                </li>
-                <li onClick={(e) => selectCategory(e, "jacket")}>
-                    <a>
-                        <img
-                            src="/assets/imgs/theme/icons/category-3.svg"
-                            alt=""
-                        />
-                        Pet Foods{" "}
-                    </a>
-                    <span className="count">42</span>
-                </li>                
+                {category.map((cat, i) => (
+                    <li onClick={(e) => selectCategory(e, cat.cat_slug)}>
+                        <a>
+                            <img
+                                src={`${imagePath+cat.icon}`}
+                                alt=""
+                            />
+                           {cat.cat_name}
+                        </a>
+                        <span className="count">{cat.total_products}</span>
+                    </li>     
+                ))}
             </ul>
         </>
     );

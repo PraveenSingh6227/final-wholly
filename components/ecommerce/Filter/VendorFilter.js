@@ -4,25 +4,40 @@ import { connect } from "react-redux";
 import { updateProductFilters } from "../../../redux/action/productFiltersAction";
 import CheckBox from "./Checkbox";
 
-const VendorFilter = ({ updateProductFilters }) => {
-    const [sizes, setSizeCheckbox] = useState(
-        [
-            { value: "NestFood" },
-            { value: "stouffer" },
-            { value: "starKist" },
-            { value: "aldi" },
-            { value: "adidas" },
-            { value: "Costco" },
-            { value: "Harris" },
-            { value: "iSnack" },
-            { value: "Burbe" }
-        ]
-    );
+const VendorFilter = ({productData, totalProducts, updateProductFilters }) => {
+    const [sizes, setSizeCheckbox] = useState([]);
 
     const Router = useRouter();
     const searchTerm = Router.query.search;
 
     const [selectedVendor, setVendor] = useState([]);
+
+    const fetchClolor = async()=>{
+        let color = []
+        await productData.items.map( async(item, i) => {
+            await item.variants.map((vItem, j) => {
+                color.push({value: vItem.variant_color})
+            })
+        })
+        setSizeCheckbox( [...new Map(color.map(item =>
+            [item['value'], item])).values()])
+            console.log('lll->',color);
+    }
+
+    useEffect(() => {
+        let color = []
+         productData.items.map((item, i) => {
+             item.variants.map((vItem, j) => {
+                color.push({value: vItem.variant_color})
+            })
+        })
+        let filteredColor = [...new Map(color.map(item =>
+            [item['value'], item])).values()]
+        setSizeCheckbox(filteredColor)
+            console.log('lll->',color,productData);
+    }, [totalProducts.length, Router]);
+
+
 
     useEffect(() => {
         const filters = {

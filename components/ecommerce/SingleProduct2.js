@@ -6,6 +6,8 @@ import { addToCart } from "../../redux/action/cart";
 import { addToCompare } from "../../redux/action/compareAction";
 import { openQuickView } from "../../redux/action/quickViewAction";
 import { addToWishlist } from "../../redux/action/wishlistAction";
+import { handleFilterImage } from "../../config/index";
+
 
 const SingleProduct2 = ({
     product,
@@ -17,6 +19,7 @@ const SingleProduct2 = ({
     
 
     const handleCart = (product) => {
+        product.selectedVariant = product.variants[0]
         addToCart(product);
         toast("Product added to Cart !");
     };
@@ -39,12 +42,13 @@ const SingleProduct2 = ({
                             <a>
                                 <img
                                     className="default-img"
-                                    src={product.images[0].img}
+                                    src={handleFilterImage(product)}
+                                    style={{width:'100%',height:'170px'}}
                                     alt=""
                                 />
                                 <img
                                     className="hover-img"
-                                    src={product.gallery[0].img}
+                                    src={handleFilterImage(product)}
                                     alt=""
                                 />
                             </a>
@@ -79,17 +83,17 @@ const SingleProduct2 = ({
                     <div className="product-badges product-badges-position product-badges-mrg">
                         {product.trending && <span className="hot">Hot</span>}
                         {product.created && <span className="new">New</span>}
-                        {product.totalSell > 100 && (
+                        {/* {product.totalSell > 100 && (
                             <span className="best">Best Sell</span>
                         )}
                         {product.discount.isActive && (
                             <span className="sale">Sale</span>
-                        )}
-                        {product.discount.percentage >= 5 && (
+                        )} */}
+                        {/* {(product.variants.length > 0) ? product.variants[0].discount : ""  >= 5 && (
                             <span className="hot">
-                                {product.discount.percentage}%
+                                {(product.variants.length > 0) ? product.variants[0].discount : "" }%
                             </span>
-                        )}
+                        )} */}
                     </div>
                 </div>
                 <div className="product-content-wrap">
@@ -107,23 +111,24 @@ const SingleProduct2 = ({
                     <div className="product-rate d-inline-block">
                         <div
                             className="product-rating"
-                            style={{ width: "90%" }}
+                            style={{ width: `${product.review.aggregateReview.rating_percent}%` }}
                         ></div>
                     </div>
 
                     <div className="product-price mt-10">
-                        <span>Rs. {product.price} </span>
+                        <span>Rs. {(product.variants.length > 0) ? product.variants[0].variant_sale_price : "" } </span>
                         <span className="old-price">{product.oldPrice && `Rs. ${product.oldPrice}`}</span>
                     </div>
                     <div className="sold mt-15 mb-15">
-                        <div className="progress mb-5">
+                        {/* <div className="progress mb-5">
                             <div
                                 className="progress-bar"
                                 role="progressbar"
                                 style={{ width: "50%" }}
                             ></div>
-                        </div>
-                        <span className="font-xs text-heading"> Sold: 90/120</span>
+                        </div> */}
+                        {/* <span className="font-xs text-heading"> Sold: 90/120</span> */}
+                        <span className="font-xs text-heading">  By <Link href="#"><a>{product.vendor.name}</a></Link></span>
                     </div>
 
                     <a

@@ -17,6 +17,7 @@ const WishlistModal = ({
 }) => {
   
     const handleCart = (product) => {
+        product.selectedVariant = product.variants[0]
         addToCart(product);
         toast("Product added to Cart !");
     };
@@ -60,7 +61,7 @@ const WishlistModal = ({
                                             />
                                         </td>
 
-                                        <td>${product.price}</td>
+                                        <td>${(product.variants.length > 0) ? product.variants[0].variant_sale_price : "" }</td>
                                         <td style={{ width: "200px" }}>
                                             <span
                                                 onClick={(e) => handleCart(product)}

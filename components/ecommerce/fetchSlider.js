@@ -7,6 +7,8 @@ import Featured from "../sliders/Featured";
 import NewArrival from "../sliders/NewArrivalTab";
 import Related from "../sliders/Related";
 import Trending from "../sliders/Trending";
+import { server } from "../../config/index";
+
 
 const FetchSlider = ({ productFilters }) => {
     const [featured, setFeatured] = useState([]);
@@ -25,13 +27,9 @@ const FetchSlider = ({ productFilters }) => {
     const fetchProducts = async () => {
 
         // With Category
-        const allProducts = await fetchByCatagory("https://whollykart.com/admin/api/index.php?action=product_list", {
+        const allProducts = await fetchByCatagory(`${server}?action=product_list`, {
             category: productFilters.category,
         });
-
-        // Without Category
-        // const request = await fetch("https://whollykart.com/admin/api/index.php?action=product_list");
-        // const allProducts = await request.json();
 
         // Featured Product
         const featuredProducts = allProducts.filter((item) => item.featured);

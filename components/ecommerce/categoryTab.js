@@ -15,14 +15,14 @@ function CategoryTab() {
     const catPAll = async () => {
         const request = await fetch(`${server}/api/index.php?action=product_list`);
         const allProducts = await request.json();
-        const catAllItem = allProducts.filter((item) => item.category);
-        setCatAll(catAllItem);
+        const catAllItem = allProducts.filter((item) => item.cat);
+        setCatAll(catAllItem.slice(0, 5));
         setActive("1");
     };
     const catP1 = async () => {
         const request = await fetch(`${server}/api/index.php?action=product_list`);
         const allProducts = await request.json();
-        const cat1Item = allProducts.filter((item) => item.category == "jeans");
+        const cat1Item = allProducts.filter((item) => item.popular_featured == 1);
         setCat1(cat1Item);
         setActive("2");
     };
@@ -30,14 +30,14 @@ function CategoryTab() {
     const catP2 = async () => {
         const request = await fetch(`${server}/api/index.php?action=product_list`);
         const allProducts = await request.json();
-        const cat2Item = allProducts.filter((item) => item.category == "shoe");
+        const cat2Item = allProducts.filter((item) => item.popular_popular == 1);
         setCat2(cat2Item);
         setActive("3");
     };
     const catP3 = async () => {
         const request = await fetch(`${server}/api/index.php?action=product_list`);
         const allProducts = await request.json();
-        const cat3Item = allProducts.filter((item) => item.category == "jacket");
+        const cat3Item = allProducts.filter((item) => item.popular_newly_added == 1);
         setCat3(cat3Item);
         setActive("4");
     };

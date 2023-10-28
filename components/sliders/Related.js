@@ -3,6 +3,9 @@ import SwiperCore, { Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { fetchByCatagory } from "../../redux/action/product";
 import SingleProduct from "./../ecommerce/SingleProduct";
+import { server } from "../../config/index";
+
+
 
 SwiperCore.use([Navigation]);
 
@@ -15,7 +18,7 @@ const RelatedSlider = () => {
 
     const fetchProducts = async () => {
         // With Category
-        const allProducts = await fetchByCatagory("https://whollykart.com/admin/api/index.php?action=product_list");
+        const allProducts = await fetchByCatagory(`${server}?action=product_list`);
         setRelated(allProducts);
     };
 

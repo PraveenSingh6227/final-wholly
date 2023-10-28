@@ -4,12 +4,15 @@ import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import { addToCart } from "../../redux/action/cart";
 import Timer from "./Timer";
+import { handleFilterImage } from "../../config/index";
 
 const Deals1 = ({ product, addToCart }) => {
     const handleCart = (product) => {
+        product.selectedVariant = product.variants[0]
         addToCart(product);
         toast("Product added to Cart !");
     };
+    console.log('handleFilterImage(product)--->',handleFilterImage(product))
     return (
         <>
             <div className="product-cart-wrap style-2 wow animate__animated animate__fadeInUp" data-wow-delay="0">
@@ -17,7 +20,10 @@ const Deals1 = ({ product, addToCart }) => {
                     <div className="product-img">
                         <Link href="/products">
                             <a>
-                                <img src={product.discount.banner} alt="" />
+                                <img 
+                                 src={handleFilterImage(product)}
+                                //  src={"http://localhost/wholly-backend/common/uploads/653680e333341-wholly-1698070755.jpeg"}
+                                alt="" />
                             </a>
                         </Link>
                     </div>
@@ -48,7 +54,7 @@ const Deals1 = ({ product, addToCart }) => {
                         </div>
                         <div className="product-card-bottom">
                             <div className="product-price">
-                                <span>Rs. {product.price}</span>
+                                <span>Rs. {(product.variants.length > 0) ? product.variants[0].variant_sale_price : "" }</span>
                                 <span className="old-price">{product.oldPrice && `Rs. ${product.oldPrice}`}</span>
                             </div>
                             <div className="add-cart">
