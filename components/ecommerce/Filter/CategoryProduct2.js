@@ -1,19 +1,18 @@
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { updateProductCategory } from "../../../redux/action/productFiltersAction";
+import { imagePath } from "../../../config/index";
+import React, { useEffect, useState } from "react";
 
-const CategoryProduct2 = ({ updateProductCategory }) => {
+const CategoryProduct2 = ({catData, updateProductCategory }) => {
 
-
-
+    const [divideCat, setDivideCat] = useState([])
 
     const router = useRouter();
 
-    // const removeSearchTerm = () => {
-    //     router.push({
-    //         pathname: "/products",
-    //     });
-    // };
+    useEffect(()=>{
+        setDivideCat(splitToNChunks(catData,3))
+    },[catData.length])
 
     const selectCategory = (e, category) => {
         e.preventDefault();
@@ -26,59 +25,53 @@ const CategoryProduct2 = ({ updateProductCategory }) => {
             },
         });
     };
+
+
+    function splitToNChunks(arr, n) {
+        var rest = arr.length % n, // how much to divide
+        restUsed = rest, // to keep track of the division over the elements
+        partLength = Math.floor(arr.length / n),
+        result = [];
+
+    for(var i = 0; i < arr.length; i += partLength) {
+        var end = partLength + i,
+            add = false;
+
+        if(rest !== 0 && restUsed) { // should add one element for the division
+            end++;
+            restUsed--; // we've used one division element now
+            add = true;
+        }
+
+        result.push(arr.slice(i, end)); // part of the array
+
+        if(add) {
+            i++; // also increment i in the case we added an extra element for division
+        }
+    }
+
+    return result;
+    }
+
+ 
     return (
         <>
+        {divideCat.map((catItem, i) => (
             <ul>
-                <li onClick={(e) => selectCategory(e, "jeans")}>
+            {catItem.map((item, i) => (
+                <li onClick={(e) => selectCategory(e, item.cat_slug)}>
                     <a>
                         <img
-                            src="/assets/imgs/theme/icons/category-1.svg"
+                            src={`${imagePath+item.icon}`}
                             alt=""
                         />
-                        Milks & Dairies
+                        {item.cat_name}
                     </a>
                     
                 </li>
-                <li onClick={(e) => selectCategory(e, "shoe")}>
-                    <a>
-                        <img
-                            src="/assets/imgs/theme/icons/category-2.svg"
-                            alt=""
-                        />
-                        Clothing
-                    </a>
-                    
-                </li>
-                <li onClick={(e) => selectCategory(e, "jacket")}>
-                    <a>
-                        <img
-                            src="/assets/imgs/theme/icons/category-3.svg"
-                            alt=""
-                        />
-                        Pet Foods{" "}
-                    </a>
-                    
-                </li>
-                <li onClick={(e) => selectCategory(e, "trousers")}>
-                    <a>
-                        <img
-                            src="/assets/imgs/theme/icons/category-4.svg"
-                            alt=""
-                        />
-                        Baking material
-                    </a>
-                    
-                </li>
-                <li onClick={(e) => selectCategory(e, "accessories")}>
-                    <a>
-                        <img
-                            src="/assets/imgs/theme/icons/category-5.svg"
-                            alt=""
-                        />
-                        Fresh Fruit
-                    </a>
-                </li>
+            ))}    
             </ul>
+        ))}    
         </>
     );
 };

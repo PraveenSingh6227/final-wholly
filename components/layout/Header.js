@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import CategoryProduct2 from "../ecommerce/Filter/CategoryProduct2";
 import CategoryProduct3 from "../ecommerce/Filter/CategoryProduct3";
 import Search from "../ecommerce/Search";
+import { server } from "../../config/index";
 
 const Header = ({
   totalCartItems,
@@ -14,6 +15,8 @@ const Header = ({
   const [isToggled, setToggled] = useState(false);
   const [scroll, setScroll] = useState(0);
   const [userDetails, setUserDetails] = useState({});
+  const [category, setCategory] = useState([]);
+
 
   useEffect(() => {
     document.addEventListener("scroll", () => {
@@ -22,6 +25,7 @@ const Header = ({
         setScroll(scrollCheck);
       }
     });
+
     if (
       localStorage.getItem('userDetails') &&
       localStorage.getItem('userDetails') !== undefined
@@ -29,6 +33,17 @@ const Header = ({
       setUserDetails(JSON.parse(localStorage.getItem('userDetails')));
     }
   },[]);
+
+  const fetchAllCategory = async () => {
+    // With Category
+    const request = await fetch(`${server}?action=category_list`);
+    const allCategory = await request.json();
+    setCategory(allCategory);
+};
+
+useEffect(() => {
+  fetchAllCategory();
+}, []);
 
   const handleToggle = () => setToggled(!isToggled);
 
@@ -387,10 +402,10 @@ const Header = ({
                     }
                   >
                     <div className="d-flex categori-dropdown-inner">
-                      <CategoryProduct2 />
-                      <CategoryProduct3 />
+                      <CategoryProduct2 catData={category} />
+                      {/* <CategoryProduct3 catData = {category} /> */}
                     </div>
-                    <div
+                    {/* <div
                       className="more_slide_open"
                       style={{ display: "none" }}
                     >
@@ -452,7 +467,7 @@ const Header = ({
                     <div className="more_categories">
                       <span className="icon"></span>{" "}
                       <span className="heading-sm-1">Show more...</span>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block  font-heading">

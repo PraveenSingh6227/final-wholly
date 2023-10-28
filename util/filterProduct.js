@@ -3,7 +3,6 @@
 export default (productList, filters) => {
     let filteredList = [...productList];
     for (const key in filters) {
-        console.log('key->',key)
         if (key !== "price" && key !== "vendor") {
             if (
                 filters[key] === "featured" ||
@@ -12,21 +11,10 @@ export default (productList, filters) => {
                 filters[key] === "highToLow"
             ) {
                 if (filters[key] === "lowToHigh") {
-                    filteredList = [
-                        ...filteredList.sort((a, b) => {
-                            if (a.variants[0].variant_sale_price < b.variant_sale_price) return -1;
-                            if (a.variants[0].variant_sale_price > b.variant_sale_price) return 1;
-                        }),
-                    ];
+                    filteredList = filteredList.sort((el1,el2) => el1.variants[0].variant_sale_price.localeCompare(el2.variants[0].variant_sale_price, undefined, {numeric: true}));
                 } else {
                     if (filters[key] === "highToLow") {
-                        console.log("hi");
-                        filteredList = [
-                            ...filteredList.sort((a, b) => {
-                                if (b.variants[0].variant_sale_price < a.variant_sale_price) return -1;
-                                if (b.variants[0].variant_sale_price > a.variant_sale_price) return 1;
-                            }),
-                        ];
+                        filteredList = filteredList.sort((el1,el2) => el2.variants[0].variant_sale_price.localeCompare(el1.variants[0].variant_sale_price, undefined, {numeric: true}));
                     } else {
                         console.log("hi1");
                         filteredList = filteredList.filter(
