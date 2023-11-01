@@ -19,6 +19,7 @@ const Wishlist = ({
 
     const handleCart = (product) => {
         product.selectedVariant = product.variants[0]
+        product.description = ""
         addToCart(product);
         toast("Product added to Cart !");
     };

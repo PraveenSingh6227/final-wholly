@@ -9,6 +9,7 @@ import { handleFilterImage } from "../../config/index";
 const Deals1 = ({ product, addToCart }) => {
     const handleCart = (product) => {
         product.selectedVariant = product.variants[0]
+        product.description = ""
         addToCart(product);
         toast("Product added to Cart !");
     };

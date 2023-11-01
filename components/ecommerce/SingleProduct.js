@@ -16,9 +16,19 @@ const SingleProduct = ({
     openQuickView,
 }) => {
     const handleCart = (product) => {
-        product.selectedVariant = product.variants[0]
-        addToCart(product);
-        toast("Product added to Cart !");
+        if(product.variants[0].variant_total_stock > 0 && product.variants[0].stock_status=="in_stock"){
+            product.selectedVariant = product.variants[0]
+            product.description = ""
+            addToCart(product);
+            toast("Product added to Cart !");
+        }else if(product.variants[0].stock_status=="on_back_order"){
+            product.selectedVariant = product.variants[0]
+            product.description = ""
+            addToCart(product);
+            toast("Product added to Cart !");
+        }else{
+            toast("Product is out of stock !");
+        }
     };
 
     const handleCompare = (product) => {
@@ -135,12 +145,12 @@ const SingleProduct = ({
                             <span className="old-price">{product.oldPrice && `Rs. ${product.oldPrice}`}</span>
                         </div>
                         <div className="add-cart">
-                            <a
-                                className="add"
-                                onClick={(e) => handleCart(product)}
-                            >
-                                <i className="fi-rs-shopping-cart mr-5"></i> Add
-                            </a>
+                                <a
+                                    className="add"
+                                    onClick={(e) => handleCart(product)}
+                                >
+                                    <i className="fi-rs-shopping-cart mr-5"></i> {(product.variants[0].variant_total_stock > 0 && product.variants[0].stock_status=="in_stock") ? "Add"  : (product.variants[0].stock_status=="on_back_order") ? "Add" : "Out of Stock" }
+                                </a>
                         </div>
                     </div>
                 </div>

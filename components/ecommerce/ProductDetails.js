@@ -48,6 +48,7 @@ const ProductDetails = ({
  
 
     const handleCart = (product) => {
+        product.description = ""
         product.selectedVariant = variantData
         addToCart(product);
         toast("Product added to Cart !");
@@ -62,6 +63,7 @@ const ProductDetails = ({
         addToWishlist(product);
         toast("Added to Wishlist !");
     };
+    console.log('variantData--->',variantData)
 
     const inCart = cartItems.find((cartItem) => cartItem.id === product.id);
 
@@ -111,14 +113,18 @@ const ProductDetails = ({
                                             </div>
 
                                             <div className="short-desc mb-30">
-                                                <p className="font-lg">{productData.desc}</p>
+                                                {productData.desc && (
+                                                    <div dangerouslySetInnerHTML={{
+                                                        __html: productData.desc
+                                                      }}></div>
+                                                )}
                                             </div>
                                             <div className="attr-detail attr-color mb-15">
                                                 <strong className="mr-10">Color</strong>
                                                 <ul className="list-filter color-filter">
                                                     {Object.keys(productData).length>0 && productData.variants.map((clr, i) => (
                                                         <li key={i}>
-                                                            <a href="javascript:void(0)" onClick={()=> setVariantData(productData.variants[i])}>
+                                                            <a href="javascript:void(0)" onClick={()=> {setVariantData(productData.variants[i]); setQuantity(1)}}>
                                                                 <span style={{background:clr.variant_color}}></span>
                                                             </a>
                                                         </li>
@@ -154,27 +160,57 @@ const ProductDetails = ({
                                             </div>
                                             <div className="bt-1 border-color-1 mt-30 mb-30"></div>
                                             <div className="detail-extralink">
-                                                <div className="detail-qty border radius">
-                                                    <a onClick={(e) => (!inCart ? setQuantity(quantity > 1 ? quantity - 1 : 1) : decreaseQuantity(productData?.pr_id))} className="qty-down">
-                                                        <i className="fi-rs-angle-small-down"></i>
-                                                    </a>
-                                                    <span className="qty-val">{inCart?.quantity || quantity}</span>
-                                                    <a onClick={() => (!inCart ? setQuantity(quantity + 1) : increaseQuantity(productData.pr_id))} className="qty-up">
-                                                        <i className="fi-rs-angle-small-up"></i>
-                                                    </a>
-                                                </div>
+                                                {variantData.variant_total_stock > 0 && variantData.stock_status=="in_stock" && (
+                                                    <div className="detail-qty border radius">
+                                                        <a onClick={(e) => (!inCart ? setQuantity(quantity > 1 ? quantity - 1 : 1) : decreaseQuantity(productData?.pr_id))} className="qty-down">
+                                                            <i className="fi-rs-angle-small-down"></i>
+                                                        </a>
+                                                        <span className="qty-val">{inCart?.quantity || quantity}</span>
+                                                        <a 
+                                                         onClick={() => (!inCart && (quantity < variantData.variant_total_stock) ? setQuantity(quantity + 1) : increaseQuantity(productData.pr_id))} 
+                                                         className="qty-up">
+                                                            <i className="fi-rs-angle-small-up"></i>
+                                                        </a>
+                                                    </div>
+                                                )}
+                                                 {variantData.stock_status=="on_back_order" && (
+                                                    <div className="detail-qty border radius">
+                                                        <a onClick={(e) => (!inCart ? setQuantity(quantity > 1 ? quantity - 1 : 1) : decreaseQuantity(productData?.pr_id))} className="qty-down">
+                                                            <i className="fi-rs-angle-small-down"></i>
+                                                        </a>
+                                                        <span className="qty-val">{inCart?.quantity || quantity}</span>
+                                                        <a onClick={() => (!inCart ? setQuantity(quantity + 1) : increaseQuantity(productData.pr_id))} className="qty-up">
+                                                            <i className="fi-rs-angle-small-up"></i>
+                                                        </a>
+                                                    </div>
+                                                )}
                                                 <div className="product-extra-link2">
-                                                    <button
-                                                        onClick={(e) =>
-                                                            handleCart({
-                                                                ...productData,
-                                                                quantity: quantity || 1
-                                                            })
-                                                        }
-                                                        className="button button-add-to-cart"
-                                                    >
-                                                        Add to cart
-                                                    </button>
+                                                    {variantData.variant_total_stock > 0 && variantData.stock_status=="in_stock" && (
+                                                        <button
+                                                            onClick={(e) =>
+                                                                handleCart({
+                                                                    ...productData,
+                                                                    quantity: quantity || 1
+                                                                })
+                                                            }
+                                                            className="button button-add-to-cart"
+                                                        >
+                                                            Add to cart
+                                                        </button>
+                                                    )}
+                                                     {variantData.stock_status=="on_back_order" && (
+                                                        <button
+                                                            onClick={(e) =>
+                                                                handleCart({
+                                                                    ...productData,
+                                                                    quantity: quantity || 1
+                                                                })
+                                                            }
+                                                            className="button button-add-to-cart"
+                                                        >
+                                                            Add to cart
+                                                        </button>
+                                                    )}
                                                     <a aria-label="Add To Wishlist" className="action-btn hover-up" onClick={(e) => handleWishlist(productData)}>
                                                         <i className="fi-rs-heart"></i>
                                                     </a>
@@ -196,7 +232,7 @@ const ProductDetails = ({
                                                 </li>
                                                 <li>
                                                     Availability:
-                                                    <span className="in-stock text-success ml-5">{(Object.keys(productData).length>0 && productData.variants.length > 0) ? variantData.variant_total_stock: 0 } Items In Stock</span>
+                                                    <span className="in-stock text-success ml-5">{(Object.keys(productData).length>0 && productData.variants.length > 0 && variantData.stock_status=="in_stock") ? variantData.variant_total_stock+" Items In Stock" : (variantData.stock_status=="on_back_order") ? "Available" : 0+" Items In Stock" } </span>
                                                 </li>
                                             </ul>
                                         </div>

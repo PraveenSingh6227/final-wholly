@@ -112,7 +112,11 @@ const ProductTab = ({product,variant}) => {
                 <div className="tab-content shop_info_tab entry-main-content">
                     <div className={activeIndex === 1 ? "tab-pane fade show active" : "tab-pane fade"} id="Description">
                         <div className="">
-                            <p>{Object.keys(productData).length>0 && productData.description}</p>
+                            {productData.description && (
+                                                    <div dangerouslySetInnerHTML={{
+                                                        __html: productData.description
+                                                      }}></div>
+                                                )}
                         </div>
                     </div>
                     <div className={activeIndex === 2 ? "tab-pane fade show active" : "tab-pane fade"} id="Additional-info">
